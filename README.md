@@ -5,6 +5,8 @@ WalkAssure
 * The main project objective is to develop a iOS mobile app that helps visually impaired individuals navigate safely and independently, especially when crossing roads.
 * The app will use AI image recognition technology to identify safe crossing areas and obstacles.
 * It will provide real-time information about the surroundings and enhance the user experience.
+![screenshot-1](https://raw.githubusercontent.com/cochiachang/walkassure/main/images/screenshot-1.png)
+![screenshot-2](https://raw.githubusercontent.com/cochiachang/walkassure/main/images/screenshot-2.jpg)
 
 ### User Interviews and Insights:
 * Interviews were conducted with visually impaired individuals, including those with partial vision and full blindness.
@@ -28,6 +30,9 @@ WalkAssure
 |Recall          |99.3%             |99.3%  |       
 |mAP50           |99.5%             |99.5%  |
 |mAP50-95        |97.4%             |96.1%  |
+
+![result](https://raw.githubusercontent.com/cochiachang/walkassure/main/images/results.png)
+![predict status](https://raw.githubusercontent.com/cochiachang/walkassure/main/images/pred.jpg)
 
 ### Install
 Create a clean environment
