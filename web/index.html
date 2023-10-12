@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="icon" href="icon.png" type="image/png">
+    <title>WalkAssure</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            z-index: -999;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            background-color: rgba(255, 255, 255, 1);
+        }
+
+        #overlay-text {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 3;
+            color: white;
+            font-size: 7vw;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        #overlay-text span {
+            text-align: center;
+            width: 90%;
+            justify-content: center;
+            align-items: center;
+            display: flex;
+            word-wrap: normal;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        .setting-icon {
+            position: absolute;
+            bottom: 30px;
+            right: 15px;
+            z-index: 4;
+            background-color: #fff;
+            border-radius: 50%;
+            padding: 10px;
+            border: 2px solid gray;
+        }
+
+        .setting-icon img {
+            display: block;
+            width: 30px;
+            height: 30px;
+        }
+
+        #full-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+            background-color: #333;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            /* gap between elements */
+            font-size: 5vw;
+			color: white;
+            max-height: 100%;  /* 設定最大高度 */
+            overflow-y: auto;  /* 允許垂直捲動 */
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 85%;
+            padding-left: 20px;
+            border-radius: 5px;
+        }
+        h3{
+            padding-left: 10px;
+        }
+
+        .setting-label {
+            font-weight: bold;
+        }
+
+        .setting-control {
+            margin-left: 10px;
+        }
+
+        .range-labels {
+            display: flex;
+        }
+
+        input[type=checkbox] {
+            height: 0;
+            width: 0;
+            visibility: hidden;
+        }
+
+        label.switch {
+            cursor: pointer;
+            width: 70px;
+            height: 35px;
+            background: grey;
+            display: block;
+            border-radius: 35px;
+            position: relative;
+        }
+
+        label.switch:after {
+            content: '';
+            position: absolute;
+            top: 1.75px;
+            left: 1.75px;
+            width: 31.5px;
+            height: 31.5px;
+            background: white;
+            border-radius: 31.5px;
+            transition: 0.3s;
+        }
+
+        label.switch:active:after {
+            width: 40px;
+        }
+
+        input:checked+label.switch:after {
+            left: calc(100% - 1.75px);
+            transform: translateX(-100%);
+        }
+
+        input:checked+label {
+            background: #4eef4e;
+        }
+
+        .close-btn-item {
+            display: flex;
+            justify-content: flex-end;
+            /* 將子元件對齊到容器的右邊 */
+        }
+
+        .close-btn {
+            font-size: 7vw;
+            cursor: pointer;
+            color: white;
+            background-color: rgba(255,255,255,0);
+            border: none;
+            border-radius: 5px;
+            padding-top: 5vh;
+            padding-right: 6vw;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="full-overlay">
+        <div class="close-btn-item">
+            <button class="close-btn" onclick="closeOverlay()" aria-label="關閉設定視窗">X</button>
+        </div>
+        <h3>功能設定</h3>
+        <div class="setting-item">
+            <div class="setting-label">紅綠燈偵測功能</div>
+            <input type="checkbox" id="switch" />
+            <label class="switch" for="switch">
+                <span class="switch-txt" turnOn="On" turnOff="Off"></span>
+            </label>
+        </div>
+        <div class="setting-item">
+            <div class="setting-label"><label for="rate">語音提示速度</label></div>
+            <div class="range-labels">
+                <span id="decrease" role="button" tabindex="0">慢</span>
+                <input type="range" id="rate" min="0" max="10" class="setting-control" aria-label="語音提示速度" aria-valuemin="0" aria-valuemax="10" aria-valuenow="2">
+                <span id="increase" role="button" tabindex="0">快</span>
+            </div>            
+        </div>
+        <h3>產品介紹</h3>
+        <div class="setting-item">
+            透過影像辨識技術和語音提示，幫助視障者更準確地判斷斑馬線的方向和安全時間。透過手機App，即時得知斑馬線上的狀況，能更自信、更安全地過馬路。
+        </div>
+        <h3>意見回饋</h3>
+        <div class="setting-item">
+            請加我們的官方Line與我們對話
+        </div>
+        <div class="setting-item">
+            <a href="https://lin.ee/Sj5W64a"><img src="line.png" width="80%" border="0"></a>
+        </div>
+    </div>
+    <div id="container">
+        <video id="video" autoplay playsinline></video>
+        <canvas id="canvas"></canvas>
+        <div id="overlay-text">取得鏡頭中...</div>
+        <div class="setting-icon" onclick="openOverlay()">
+            <img src="setting.png" alt="Settings">
+        </div>
+    </div>
+    <script src="client.js"></script>
+    <script src="howler.core.min.js"></script>
+</body>
+
+</html>
