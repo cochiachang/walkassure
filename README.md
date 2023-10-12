@@ -48,5 +48,12 @@ or install from requirements.txt
 ```
 pip install -r requirements.txt
 ```
+
+### Usage
+start python server
+```
+python server.py
+```
+than open the address [http://localhost:8080/](http://localhost:8080/)
 ### License 
 This work is under GNU GENERAL PUBLIC LICENSE, check LICENSE file for details. All rights reserved to [Ultralytics](https://github.com/ultralytics/ultralytics) for the YOLO model.
