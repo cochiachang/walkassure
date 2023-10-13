@@ -52,7 +52,7 @@ def main(imageSource, start_no_cross, is_in_crosswalk, previous_direction , rema
             start_no_cross = time.time()
         if is_in_crosswalk is True:
             # 判斷是否斑馬線已結束
-            if remaining_crossings > 0.2:
+            if remaining_crossings > 0.3:
                 pointer_direction = str(previous_direction if previous_direction > 0 else 12+previous_direction) + "點鐘"
                 message["crosswalk_detect"]  = "wrong_direction"
                 if previous_direction != 0:
@@ -65,16 +65,15 @@ def main(imageSource, start_no_cross, is_in_crosswalk, previous_direction , rema
             is_in_crosswalk = False
             message["crosswalk_detect"]  = "no_crosswalk"
     # 障礙物
-    if current_crosswalk is not None:
-        alert = ImageProcess.getObjectContours(image, current_crosswalk)
-        cls_values = [item["cls"] for item in alert]
-        cls_counts = Counter(cls_values)
-        obstacle = []
-        if len(alert) > 0:
-            obstacle.append("obstacle")
-        for key in cls_counts:
-            type = {"0": "person", "1": "bicycle", "2": "car", "3": "motorcycle", "5": "bus", "7": "truck", "15": "cat", "16": "dog", "25": "umbrella", "26": "handbag", "28": "suitcase"}
-            obstacle.append (type[str(key)])
+    alert = ImageProcess.getObjectContours(image)
+    cls_values = [item["cls"] for item in alert]
+    cls_counts = Counter(cls_values)
+    obstacle = []
+    if len(alert) > 0:
+        obstacle.append("obstacle")
+    for key in cls_counts:
+        type = {"0": "person", "1": "bicycle", "2": "car", "3": "motorcycle", "5": "bus", "7": "truck", "15": "cat", "16": "dog", "25": "umbrella", "26": "handbag", "28": "suitcase"}
+        obstacle.append (type[str(key)])
            
         message["obstacle"] = obstacle
     if detect_traffic is True:

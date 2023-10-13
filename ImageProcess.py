@@ -109,13 +109,7 @@ def is_overlapping(box1, box2):
     return True
 
 # 取得障礙物的輪廓
-def getObjectContours(image, current_crosswalk):
-    x, y, w, h = cv2.boundingRect(current_crosswalk)
-    x = int(x)
-    w = int(w)
-    allow_extend = image.shape[0]*0.1
-    new_y = int(y - allow_extend if y - allow_extend > 0 else 0)
-    new_h = int(h + y - new_y)
+def getObjectContours(image):
     results = yolo_model(image, show=False, verbose=False)
     alert = []
     result = list(results)[0]
@@ -129,9 +123,7 @@ def getObjectContours(image, current_crosswalk):
         x2 = int(x1 + width)
         y2 = int(y1 + height)
         if cls in [0,1,2,3,5,7,16,25,26,28]:
-            # cv2.rectangle(image, (x, new_y), (x+w, new_y+new_h),(255,0,0),1)
-            # cv2.rectangle(image, (x1, y1), (x1+width, y1+height),(255,255,0),1)
-            if y2 > image.shape[0]*0.6 and y2 < image.shape[0]*0.95:
+            if y2 > image.shape[0]*0.5 and y2 < image.shape[0]*0.95:
                 alert.append({"x1": x1, "y1": y1, "x2": x2, "y2": y2, "cls": cls})
     return alert
 
