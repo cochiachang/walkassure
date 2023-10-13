@@ -53,10 +53,9 @@ def main(imageSource, start_no_cross, is_in_crosswalk, previous_direction , rema
         if is_in_crosswalk is True:
             # 判斷是否斑馬線已結束
             if remaining_crossings > 0.3:
-                pointer_direction = str(previous_direction if previous_direction > 0 else 12+previous_direction) + "點鐘"
+                pointer_direction = str(previous_direction if previous_direction > 0 else 12+previous_direction)
                 message["crosswalk_detect"]  = "wrong_direction"
-                if previous_direction != 0:
-                    message["crosswalk_direction"] = f"back_clock{pointer_direction}_direction"
+                message["crosswalk_direction"] = f"back_clock{pointer_direction}_direction"
             else:
                 message["crosswalk_detect"]  = "end_crosswalk"
         else:

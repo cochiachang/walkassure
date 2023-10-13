@@ -42,6 +42,8 @@ let txt_mapping = {
     L2_clock9_direction: "斑馬線在你的9點鐘方向",
     L2_back_clock1_direction: "請往1點鐘方向返回",
     L2_back_clock2_direction: "請往2點鐘方向返回",
+    L2_back_clock3_direction: "請往2點鐘方向返回",
+    L2_back_clock9_direction: "請往10點鐘方向返回",
     L2_back_clock10_direction: "請往10點鐘方向返回",
     L2_back_clock11_direction: "請往11點鐘方向返回",
     L3_obstacle: "前方有",
@@ -83,6 +85,8 @@ window.onload = () => {
             L2_clock9_direction: [37500, 3500],
             L2_back_clock1_direction: [48000, 3500],
             L2_back_clock2_direction: [52000, 3000],
+            L2_back_clock3_direction: [52000, 3000],
+            L2_back_clock9_direction: [55000, 3700],
             L2_back_clock10_direction: [55000, 3700],
             L2_back_clock11_direction: [59000, 3500],
             L3_obstacle: [63000, 1200],
@@ -107,12 +111,12 @@ window.onload = () => {
         loadSettingsFromCookies();
     });
 
-    sound.on('end', function(){
-        if(current_msg.length > 0){
+    sound.on('end', function () {
+        if (current_msg.length > 0) {
             let next = current_msg.shift()
             sound.play(next)
             currentPlayingSound = next
-        }else{
+        } else {
             currentPlayingSound = ""
         }
     });
@@ -203,15 +207,15 @@ function connectWebSocket() {
             /*if (!document.getElementById('switch').checked) {
                 messages.traffic_light = ""
             }*/
-			messages.traffic_light = ""
+            messages.traffic_light = ""
             // 處理文字顯示
-            obstacle = (messages.obstacle.length > 0) ? messages.obstacle.map(item => (txt_mapping['L3_' +item])).join(' '):""
-            if(obstacle == "" && obstacle != last_obstacle){
+            obstacle = (messages.obstacle.length > 0) ? messages.obstacle.map(item => (txt_mapping['L3_' + item])).join(' ') : ""
+            if (obstacle == "" && obstacle != last_obstacle) {
                 obstacle = txt_mapping["no_obstacle"]
             }
-            if(messages.obstacle.length > 0 && obstacle != last_obstacle){
+            if (messages.obstacle.length > 0 && obstacle != last_obstacle) {
                 // 出現障礙物時如果看不見斑馬線不要告警，有可能是被遮住
-                if(messages.crosswalk_detect == "wrong_direction" || messages.crosswalk_detect == "no_crosswalk" || messages.crosswalk_detect == "end_crosswalk" ){
+                if (messages.crosswalk_detect == "wrong_direction" || messages.crosswalk_detect == "no_crosswalk" || messages.crosswalk_detect == "end_crosswalk") {
                     messages.crosswalk_detect = last_crosswalk_detect
                     messages.crosswalk_direction = last_crosswalk_direction
                 }
@@ -224,28 +228,37 @@ function connectWebSocket() {
             message.innerHTML = messageList.map(text => `<span>${text}</span>`).join('\n');
 
             // 處理音訊播放
-            if (messages.crosswalk_detect != last_crosswalk_detect){
+            if (messages.crosswalk_detect != last_crosswalk_detect) {
                 current_msg = current_msg.filter(item => !item.startsWith('L1_'));
-                if(currentPlayingSound.startsWith('L1_')){
+                if (currentPlayingSound.startsWith('L1_')) {
                     sound.stop()
                 }
             }
-            
+
             if (messages.crosswalk_direction != last_crosswalk_direction) {
                 current_msg = current_msg.filter(item => !item.startsWith('L2_'));
-                if(currentPlayingSound.startsWith('L2_')){
+                if (currentPlayingSound.startsWith('L2_')) {
                     sound.stop()
                 }
             }
             //console.log(obstacle == txt_mapping["no_obstacle"] , obstacle != last_obstacle)
 
             if (obstacle != txt_mapping["no_obstacle"] && obstacle != last_obstacle) {
-                for(let key in messages.obstacle){
+                for (let key in messages.obstacle) {
+                    current_msg = current_msg.filter(item => !item.startsWith('L3_'));
                     current_msg.push("L3_" + messages.obstacle[key]);
+                    if (currentPlayingSound.startsWith('L3_')) {
+                        sound.stop()
+                    }
                 }
-            }else if(obstacle == txt_mapping["no_obstacle"] && obstacle != last_obstacle){
+            } else if (obstacle == txt_mapping["no_obstacle"] && obstacle != last_obstacle) {
+                current_msg = current_msg.filter(item => !item.startsWith('L3_'));
                 current_msg.push("L3_no_obstacle")
+                if (currentPlayingSound.startsWith('L3_')) {
+                    sound.stop()
+                }
             }
+
             if (messages.crosswalk_detect != last_crosswalk_detect) {
                 current_msg.push('L1_' + messages.crosswalk_detect)
             }
@@ -253,7 +266,7 @@ function connectWebSocket() {
                 current_msg.push('L2_' + messages.crosswalk_direction)
             }
 
-            if(!sound.playing() && current_msg.length > 0){
+            if (!sound.playing() && current_msg.length > 0) {
                 let next = current_msg.shift()
                 sound.play(next)
                 currentPlayingSound = next
@@ -268,9 +281,10 @@ function connectWebSocket() {
             is_in_crosswalk = parsedObj.is_in_crosswalk;
             previous_direction = parsedObj.previous_direction;
             remaining_crossings = parsedObj.remaining_crossings;
-			
-			sendScreenToServer(ws, start_no_cross, is_in_crosswalk, previous_direction, remaining_crossings, false)//document.getElementById('switch').checked)
-			
+            console.log(remaining_crossings)
+
+            sendScreenToServer(ws, start_no_cross, is_in_crosswalk, previous_direction, remaining_crossings, false)//document.getElementById('switch').checked)
+
         }
 
         //console.log("Received from server:", event.data, previous_direction, remaining_crossings);
@@ -383,9 +397,9 @@ function loadSettingsFromCookies() {
 
     if (rateSetting) {
         document.getElementById('rate').value = rateSetting;
-        try{
+        try {
             sound.rate(1.3 + parseInt(rateSetting) * 0.1)
-        }catch(e){}
+        } catch (e) { }
     }
     if (switchSetting) {
         //document.getElementById('switch').checked = switchSetting === 'true'; // because cookie values are always strings
