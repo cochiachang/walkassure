@@ -22,6 +22,7 @@ WalkAssure
 * GitHub open data ([Crosswalks-Detection-using-YOLO](https://github.com/xN1ckuz/Crosswalks-Detection-using-YOLO)) / Self-labeling / 713 images
 * All training data opensource in [Roboflow Open datasets](https://universe.roboflow.com/project-wdkej/crosswalk2-jqjh4)
 * Self-captured photos and videos (designed for different daytime, nighttime, crowd, weather, and regional variations) / Self-labeling
+* Train model script [Google Colab](https://colab.research.google.com/drive/1OoQeeK6syuZufprqQds8cggQAryWefsx#scrollTo=3DRdbEM2hsW9)
 
 ### Quantitative Results 
 |                |Box               |Mask   |
