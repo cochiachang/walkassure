@@ -1,0 +1,64 @@
+{
+  "projectInfo": {
+    "name": "WalkAssure",
+    "description": "iOS 行動應用程式，利用 AI 影像辨識技術協助視障人士安全獨立地導航，特別是在過馬路時提供即時環境資訊",
+    "type": "AI/Computer Vision",
+    "language": "Python",
+    "frameworks": ["YOLOv8", "OpenCV", "aiohttp"],
+    "version": "1.0.0"
+  },
+  "environment": {
+    "python": {
+      "version": "3.8.1+",
+      "packageManager": "pip",
+      "requirements": "requirements.txt",
+      "mainFile": "server.py"
+    }
+  },
+  "development": {
+    "setupCommands": [
+      "conda create --name cleanenv python=3.8.1",
+      "conda activate cleanenv",
+      "pip install -r requirements.txt"
+    ],
+    "runCommands": [
+      "python server.py"
+    ],
+    "testCommands": [],
+    "buildCommands": []
+  },
+  "features": {
+    "crosswalkDetection": {
+      "model": "model/crosswalk.pt",
+      "accuracy": {
+        "precision": "99.9%",
+        "recall": "99.3%",
+        "mAP50": "99.5%",
+        "mAP50-95": "97.4%"
+      }
+    },
+    "trafficLightDetection": {
+      "model": "model/traffic_light.pt"
+    },
+    "webInterface": {
+      "port": 8080,
+      "url": "http://localhost:8080/"
+    }
+  },
+  "structure": {
+    "models": "model/",
+    "images": "images/",
+    "web": "web/",
+    "mainScript": "Main.py",
+    "server": "server.py",
+    "imageProcessing": "ImageProcess.py",
+    "camera": "TakePhoto.py",
+    "video": "VideoStream.py"
+  },
+  "deployment": {
+    "target": "iOS Mobile App",
+    "serverRequirements": ["Python 3.8.1+", "PyTorch", "OpenCV", "Ultralytics"]
+  },
+  "license": "GNU GENERAL PUBLIC LICENSE",
+  "repository": "https://github.com/cochiachang/walkassure"
+}
