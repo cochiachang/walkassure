@@ -12,21 +12,21 @@ on:
 
 jobs:
   claude-analysis:
-  runs-on: ubuntu-latest
-  if: contains(github.event.issue.body, '@claude') || contains(github.event.comment.body, '@claude')
-
-  steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Claude AI 回應
-      uses: anthropics/claude-code-action@beta
-      with:
-        anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-
-    - name: Claude AI 呼叫成功通知
-      if: always()
-      run: echo "✅ Claude 回應觸發成功！"
+    runs-on: ubuntu-latest
+    if: contains(github.event.issue.body, '@claude') || contains(github.event.comment.body, '@claude')
+  
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+  
+      - name: Claude AI 回應
+        uses: anthropics/claude-code-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+  
+      - name: Claude AI 呼叫成功通知
+        if: always()
+        run: echo "✅ Claude 回應觸發成功！"
   build-and-test:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' || github.event_name == 'pull_request'
